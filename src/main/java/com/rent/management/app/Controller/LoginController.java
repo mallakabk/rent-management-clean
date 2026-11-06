@@ -67,10 +67,9 @@ public class LoginController implements ActionListener{
      * @param e event 
      */
     @Override
-    public void actionPerformed(ActionEvent e){
-       String username = loginView.getUsername();
-       String password = loginView.getPassword();
-
+    public void actionPerformed(ActionEvent e)   // calls login(...) first, then register(...)
+      login(String username, ...)
+      register(String username, ...)
         try{
             if(e.getActionCommand().equals("login")){
                 if(login(username, password)){ } 
@@ -94,13 +93,8 @@ public class LoginController implements ActionListener{
 }
     }
 
-    
-
-    /**
-     * Opens a home page based on user type and access level
-     * @param userType type of user to determing home page
-     */
     public void openHomePage(String userType){
+     
         //Open the page to view depending on renter, landlord or other stuff
     }
 
