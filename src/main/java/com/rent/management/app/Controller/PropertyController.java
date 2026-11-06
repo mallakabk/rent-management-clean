@@ -191,26 +191,11 @@ public class PropertyController implements ActionListener {
      * edits a property
      * @param property property containing the edits
      */
-    public void editProperty(Property property){
-        String pid = property.getPropertyId();
-        String type = property.getPropertyType().toString();
-        int numBed = property.getNumOfBed();
-        int numBath = property.getNumOfBath();
-        boolean isFurnished = property.isFurnished();
-        String furnishedStatus;
-        if(isFurnished)
-            furnishedStatus = "Yes";
-        else
-            furnishedStatus = "No";
-        String quadrant = property.getAddress().getCityQuadrant().toString();
-        Address address = property.getAddress();
-        Payment payment = property.getPayment();
-        boolean paid = payment.isPaid();
-        String status = property.getPropertyStatus().toString();
-        Date startDate = payment.getPeriod().getStartDate();
-        Date endDate = payment.getPeriod().getEndDate();
-        db.updateProperty(pid, type, numBed, numBath, furnishedStatus, quadrant, address.getFormattedAddress(), 1, status, startDate.getFormattedDate(), endDate.getFormattedDate());
-    }
+        
+  public void editProperty(Property property){
+    db.updateProperty(property);
+     }
+    
     
     /**
      * getter for properties
