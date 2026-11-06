@@ -183,7 +183,7 @@ public class ManagerController implements ActionListener {
             }
             data[i][4] = property.getAddress().getFormattedAddress();
             data[i][5] = property.getPropertyStatus().toString();
-            data[i][6] = property.getAddress().getCityQuadrant().toString();
+            data[i][6] = property.getCityQuadrant().toString();
         }
 
     }
