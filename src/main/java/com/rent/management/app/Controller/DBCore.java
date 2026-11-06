@@ -876,20 +876,20 @@ public boolean updateProperty(Property property){
      * @return JSONArray of all people
      */
     public JSONArray getAllPeople(){
-        JSONArray arr = new JSONArray(); // array of properties to be returned
-        try {
-            String query = "SELECT * FROM Person"; // select all properties query
+       JSONArray people = new JSONArray();
+try {
+    String query = "SELECT * FROM Person";
 
             Statement stmt =  dbConnect.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
 
             while(rs.next()){
-                JSONObject obj = new JSONObject(); // json object to be returned with all properties
-                obj.put("email", rs.getString("email"));
+               JSONObject person = new JSONObject();
+               person.put("email", rs.getString("email"));
                 obj.put("name", rs.getString("name"));
                 obj.put("access_level", rs.getString("accessLevel"));
-                arr.add(obj); // adding the object to the json array
+                people.add(person);
             }
 
             stmt.close();
@@ -898,7 +898,8 @@ public boolean updateProperty(Property property){
             System.err.println("Error in getting all persons sql");
             ex.printStackTrace();
         }
-        return arr;
+       
+       return people;
     }
 
     /**
