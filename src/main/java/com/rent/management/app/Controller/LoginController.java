@@ -23,6 +23,10 @@ import javax.swing.text.Utilities;
 
 import com.rent.management.app.Exceptions.*;
 public class LoginController implements ActionListener{
+
+ private static final int ACCESS_LEVEL_MANAGER = 1;
+ private static final int ACCESS_LEVEL_LANDLORD = 2;
+    
     private DBCore db;
     private PersonController pc;
     private Login loginView;
@@ -132,11 +136,11 @@ public class LoginController implements ActionListener{
         //If successfully, Add to Model
         this.pc = new PersonController(db);
         
-        if(accessLevel == 1){ //Manager
+        if(accessLevel == ACCESS_LEVEL_MANAGER){
             pc.setManager(fName, lName, username);
-        } else if(accessLevel == 2){ //Landlord
+        } else if(accessLevel == ACCESS_LEVEL_LANDLORD){
             pc.setLandlord(fName, lName, username);
-        } else{ //Renter
+        } else{ 
             pc.setRenter(fName, lName, username, false);
             try{
                 db.registerRenter(username, 0, null);
@@ -162,20 +166,20 @@ public class LoginController implements ActionListener{
         int accessLevel;
         try{
            accessLevel = db.validateLogin(username, password);
-
-            if(accessLevel == 1){ //Manager
+            
+            if(accessLevel == ACCESS_LEVEL_MANAGER){
                 obj = db.findPerson(username);
                 obj.put("Email", username);
                 pc.setManager(obj);
                 propc = new PropertyController(db,pc, uc);
                 managerController = new ManagerController(db,pc, uc, propc);
-            } else if(accessLevel == 2){ //Landlord
+            } else if(accessLevel == ACCESS_LEVEL_LANDLORD){
                 obj = db.findPerson(username);
                 obj.put("Email", username);
                 pc.setLandlord(obj);
                 propc = new PropertyController(db,pc, uc);
                 landlordController = new LandlordController(db, pc, uc, propc);
-            } else{ //Renter
+           } else{
                 obj = db.findPerson(username);
                 obj.put("Email", username);
                 obj = db.findRenter(obj);                
