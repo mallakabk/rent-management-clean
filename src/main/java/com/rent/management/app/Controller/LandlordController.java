@@ -118,8 +118,10 @@ public class LandlordController implements ActionListener{
             }
             data[i][4] = property.getAddress().getFormattedAddress();
             data[i][5] = property.getPropertyStatus().toString();
-            data[i][6] = property.getAddress().getCityQuadrant().toString();
-        }
+            data[i][6] = properties.get(i).getCityQuadrant().toString();
+            String quadrant = property.getCityQuadrant().toString();
+                
+		}
     }
 
     /**
