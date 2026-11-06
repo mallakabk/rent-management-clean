@@ -209,12 +209,7 @@ public class PropertyController implements ActionListener {
             result[i][0] = properties.get(i).getPropertyType().toString();
             result[i][1] = Integer.toString(properties.get(i).getNumOfBed());
             result[i][2] = Integer.toString(properties.get(i).getNumOfBath());
-            boolean furnished = properties.get(i).isFurnished();
-            if (furnished) {
-                result[i][3] = "Yes";
-            } else{
-                result[i][3] = "No";
-            }
+            result[i][3] = properties.get(i).getFurnishedLabel();
             result[i][4] = properties.get(i).getPropertyStatus().toString();
             result[i][5] = properties.get(i).getAddress().getFormattedAddress();
             result[i][6] = properties.get(i).getCityQuadrant().toString();
@@ -244,12 +239,7 @@ public class PropertyController implements ActionListener {
                 result[j][0] = properties.get(i).getPropertyType().toString();
                 result[j][1] = Integer.toString(properties.get(i).getNumOfBed());
                 result[j][2] = Integer.toString(properties.get(i).getNumOfBath());
-                boolean furnished = properties.get(i).isFurnished();
-                if (furnished) {
-                    result[j][3] = "Yes";
-                } else{
-                    result[j][3] = "No";
-                }
+               result[j][3] = properties.get(i).getFurnishedLabel();
                 result[j][4] = properties.get(i).getPropertyStatus().toString();
                 result[j][5] = properties.get(i).getAddress().getFormattedAddress();
                 result[j][6] = properties.get(i).getCityQuadrant().toString();
