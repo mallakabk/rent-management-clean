@@ -4,8 +4,6 @@ import com.rent.management.app.Model.Role.Person;
 import com.rent.management.app.Model.Util.Name;
 import com.rent.management.app.Model.Util.SearchCriteria;
 import com.rent.management.app.View.Pages.Listing.*;
-// import com.rent.management.app.View.Pages.Listing.RenterMenuView;
-// import com.rent.management.app.View.Pages.Listing.UnRegRenterView;
 import com.rent.management.app.View.Pages.LoginPage.Login;
 
 
@@ -82,7 +80,6 @@ public class LoginController implements ActionListener{
             }else if(e.getActionCommand().equals("register")){
                 unRegRenterView.setVisible(true);
                 unRegRenterView.submitListener(this);
-                //return;
             }else if(e.getActionCommand().equals("submit")){
                 String fName=unRegRenterView.getFName();
                 String lName = unRegRenterView.getLName();
@@ -158,8 +155,7 @@ public class LoginController implements ActionListener{
      * @param password user password
      */
     public boolean login(String username, String password){
-        //See if user exists
-        //String formattedQuery;
+       
         JSONObject person;
         this.pc = new PersonController(db);
         emailAddress=username;
