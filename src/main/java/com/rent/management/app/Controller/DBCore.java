@@ -279,25 +279,26 @@ public class DBCore {
     * @param start active date start (for property posting)
     * @param end end active date based on fees
     */
-    public boolean updateProperty(String pid, String type, int numBed, int numBath, String furnished, String quadrant, String address, int feePaid, String status, String start, String end){
-        try{
-            String query = "UPDATE Property SET Type = ?,  Num_Bed = ?, Num_Bath = ?, Furnished = ?, Quadrant = ?, Address = ?, Fee_Paid = ?, Status = ?, Active_Date = ?, End_Date = ? WHERE PID = '" + pid + "'";
-            PreparedStatement stmt = dbConnect.prepareStatement(query);
-            stmt.setString(1, type);
-            stmt.setInt(2, numBed);
-            stmt.setInt(3, numBath);
-            stmt.setString(4, furnished);
+  private static final int FEE_PAID = 1;
+public boolean updateProperty(Property property){
+    Payment payment = property.getPayment();
+    String start = payment.getPeriod().getStartDate().getFormattedDate();
+    String end = payment.getPeriod().getEndDate().getFormattedDate();
+    try{
+        String query = "UPDATE Property SET Type = ?, ... WHERE PID = '"
+                + property.getPropertyId() + "'";
+        PreparedStatement stmt = dbConnect.prepareStatement(query);
+        stmt.setString(1, property.getPropertyType().toString());
+        stmt.setInt(2, property.getNumOfBed());
+        stmt.setInt(3, property.getNumOfBath());
+        stmt.setString(4, property.getFurnishedLabel());   // added in Rule 6.3
             stmt.setString(5, quadrant);
             stmt.setString(6, address);
-            stmt.setInt(7, feePaid);
-            stmt.setString(8, status);
-            stmt.setString(9, start);
-            stmt.setString(10, end);
-        } catch (SQLException ex){
-            System.err.println("Error in 'update property' sql");
-            throw new IllegalQueryException();
-        }
-        return true;
+          stmt.setInt(7, FEE_PAID);
+        stmt.setString(9, start);
+        stmt.setString(10, end);
+    } catch (SQLException ex){ ... }
+    return true;
     }
 
     /**
