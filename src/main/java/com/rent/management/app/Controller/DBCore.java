@@ -463,24 +463,19 @@ public boolean updateProperty(Property property){
 
             String query = "UPDATE Property SET Fee_Paid = 1, Active_Date = ?, End_Date = ? WHERE PID = " + property_id + " ";
 
-            PreparedStatement stmt = dbConnect.prepareStatement(query);
-            
-            LocalDateTime date = LocalDateTime.now(); // retrieve current date
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern ("MMM dd, yyyy");
-            String formattedDate = date.format(formatter);
-            
-            stmt.setString(1, formattedDate);
-            
-            // increment date by period
-            date.plusDays(period);
-            formattedDate = date.format(formatter);
-            stmt.setString(2, formattedDate);
-
-            // submit query
-            stmt.executeUpdate();
-            stmt.close();
-            
-        } catch (SQLException ex) {
+           PreparedStatement stmt = dbConnect.prepareStatement(query);
+LocalDateTime date = LocalDateTime.now(); // retrieve current date
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+String formattedDate = date.format(formatter);
+stmt.setString(1, formattedDate);
+// increment date by period
+date.plusDays(period);
+formattedDate = date.format(formatter);
+stmt.setString(2, formattedDate);
+// submit query
+stmt.executeUpdate();
+stmt.close();
+} catch (SQLException ex) {
             System.err.println("Error in paying fees");
             ex.printStackTrace();
         }
