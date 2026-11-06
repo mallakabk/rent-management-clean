@@ -2,19 +2,16 @@ package com.rent.management.app.Model.Util;
 
 
 public class Name {
-    private String fName; //first name
-    private String lName; //last name
-
-    /**
-     * Constructor for name
-     * @param fName String argument for first name
-     * @param mName String argument for middle name
-     * @param lName String argument for last name
-     */
-    public Name(String fName, String lName) {
-        this.setfName(fName);
-        this.setlName(lName);
-    }
+  private String firstName;
+private String lastName;
+/**
+ * @param firstName String argument for first name
+ * @param lastName String argument for last name
+ */
+public Name(String firstName, String lastName) {
+    this.setFirstName(firstName);
+    this.setLastName(lastName);
+}
 
     /**
      * getter for last name
