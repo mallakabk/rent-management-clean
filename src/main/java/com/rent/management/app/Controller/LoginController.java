@@ -68,8 +68,8 @@ public class LoginController implements ActionListener{
      */
     @Override
     public void actionPerformed(ActionEvent e){
-        String username=loginView.getUsername();
-        String password=loginView.getPassword();
+       String username = loginView.getUsername();
+       String password = loginView.getPassword();
 
         try{
             if(e.getActionCommand().equals("login")){
@@ -81,19 +81,17 @@ public class LoginController implements ActionListener{
                 unRegRenterView.setVisible(true);
                 unRegRenterView.submitListener(this);
             }else if(e.getActionCommand().equals("submit")){
-                String fName=unRegRenterView.getFName();
-                String lName = unRegRenterView.getLName();
-                String email=unRegRenterView.getEmail();
-                String pass= unRegRenterView.getPassword();
-                if(register(email, pass, accessLevel, fName, lName)){
-
-                } else{
-                    System.err.println("Registration Failed! User exist!");
-                }
+               String firstName = unRegRenterView.getFName();
+               String lastName = unRegRenterView.getLName();
+               String email = unRegRenterView.getEmail();
+               String pass = unRegRenterView.getPassword();
+              if (!register(email, pass, accessLevel, firstName, lastName)) {
+             System.err.println("Registration Failed! User exist!");
+         }
             }
-        }catch(Exception exception){
-                exception.printStackTrace();
-        }
+      } catch (Exception exception) {
+    exception.printStackTrace();
+}
     }
 
     
