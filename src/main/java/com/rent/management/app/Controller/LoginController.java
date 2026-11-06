@@ -28,15 +28,15 @@ public class LoginController implements ActionListener{
  private static final int ACCESS_LEVEL_LANDLORD = 2;
     
     private DBCore db;
-    private PersonController pc;
+    private PersonController personController;
     private Login loginView;
     private UnRegRenterView unRegRenterView;
-    private PropertyController propc;
+    private PropertyController propertyController;
     private String userType;
     private LandlordController landlordController;
     private ManagerController managerController;
     private int accessLevel;
-    private UtilController uc;
+    private UtilController utilController;
     private String emailAddress;
 
     /**
@@ -160,7 +160,7 @@ public class LoginController implements ActionListener{
     public boolean login(String username, String password){
         //See if user exists
         //String formattedQuery;
-        JSONObject obj;
+        JSONObject person;
         this.pc = new PersonController(db);
         emailAddress=username;
         int accessLevel;
@@ -168,11 +168,11 @@ public class LoginController implements ActionListener{
            accessLevel = db.validateLogin(username, password);
             
             if(accessLevel == ACCESS_LEVEL_MANAGER){
-                obj = db.findPerson(username);
+                person = db.findPerson(username);
                 obj.put("Email", username);
-                pc.setManager(obj);
-                propc = new PropertyController(db,pc, uc);
-                managerController = new ManagerController(db,pc, uc, propc);
+                personController.setManager(person);
+                propertyController = new PropertyController(db, personController, utilController);
+                managerController = new ManagerController(db, personController, utilController,propertyController);
             } else if(accessLevel == ACCESS_LEVEL_LANDLORD){
                 obj = db.findPerson(username);
                 obj.put("Email", username);
