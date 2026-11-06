@@ -25,7 +25,7 @@ public class DBCore {
     private final String DB_PASS;
     private final String DB_URL;
 
-    public Connection dbConnect;
+    private Connection dbConnect;
     private ResultSet result;
 
     /**
