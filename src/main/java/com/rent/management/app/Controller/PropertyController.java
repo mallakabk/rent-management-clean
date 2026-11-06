@@ -217,7 +217,8 @@ public class PropertyController implements ActionListener {
             }
             result[i][4] = properties.get(i).getPropertyStatus().toString();
             result[i][5] = properties.get(i).getAddress().getFormattedAddress();
-            result[i][6] = properties.get(i).getAddress().getCityQuadrant().toString();
+            result[i][6] = properties.get(i).getCityQuadrant().toString();
+
         }
         return result;
     }
@@ -251,7 +252,8 @@ public class PropertyController implements ActionListener {
                 }
                 result[j][4] = properties.get(i).getPropertyStatus().toString();
                 result[j][5] = properties.get(i).getAddress().getFormattedAddress();
-                result[j][6] = properties.get(i).getAddress().getCityQuadrant().toString();
+                result[j][6] = properties.get(i).getCityQuadrant().toString();
+
                 j++;
             }
         }
