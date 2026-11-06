@@ -125,7 +125,7 @@ public class PropertyInfoView extends JFrame {
      * Setter of property quadrant from property quadrant
      * */
     public void setQuadrant(){
-        status.setText(property.getAddress().getCityQuadrant().toString());
+        status.setText(property.getCityQuadrant().toString());
    }
 
     /**
