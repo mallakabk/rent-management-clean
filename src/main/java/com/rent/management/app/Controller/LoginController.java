@@ -168,23 +168,22 @@ public class LoginController implements ActionListener{
            accessLevel = db.validateLogin(username, password);
             
             if(accessLevel == ACCESS_LEVEL_MANAGER){
-                person = db.findPerson(username);
-                obj.put("Email", username);
+                person = findPersonWithEmail(username);
                 personController.setManager(person);
                 propertyController = new PropertyController(db, personController, utilController);
                 managerController = new ManagerController(db, personController, utilController,propertyController);
             } else if(accessLevel == ACCESS_LEVEL_LANDLORD){
-                obj = db.findPerson(username);
-                obj.put("Email", username);
-                pc.setLandlord(obj);
+                person = findPersonWithEmail(username);
+                personController.setLandlord(person);
                 propc = new PropertyController(db,pc, uc);
                 landlordController = new LandlordController(db, pc, uc, propc);
            } else{
-                obj = db.findPerson(username);
-                obj.put("Email", username);
-                obj = db.findRenter(obj);                
-                pc.setRenter(obj);
-                propc = new PropertyController(db,pc, uc);
+               person = db.findRenter(findPersonWithEmail(username));
+               private JSONObject findPersonWithEmail(String username) throws IllegalQueryException {
+               JSONObject person = db.findPerson(username);
+               person.put("Email", username);
+               return person;
+            }
             }
             this.pc.getPerson().setEmail(username);
 
