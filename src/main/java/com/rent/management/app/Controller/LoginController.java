@@ -22,9 +22,9 @@ import javax.swing.text.Utilities;
 import com.rent.management.app.Exceptions.*;
 public class LoginController implements ActionListener{
 
- private static final int ACCESS_LEVEL_MANAGER = 1;
- private static final int ACCESS_LEVEL_LANDLORD = 2;
-    
+    private static final int ACCESS_LEVEL_MANAGER = 1;
+    private static final int ACCESS_LEVEL_LANDLORD = 2;
+
     private DBCore db;
     private PersonController personController;
     private Login loginView;
@@ -42,11 +42,11 @@ public class LoginController implements ActionListener{
      * @param db DBcore to access database
      * @param accessLevel access level of user
      */
-    public LoginController(DBCore db, UtilController uc, int accessLevel, PropertyController propc){
-        this.propc = propc;
+    public LoginController(DBCore db, UtilController utilController, int accessLevel, PropertyController propertyController){
+        this.propertyController = propertyController;
         this.accessLevel = accessLevel;
-        this.uc = uc;
-        loginView=new Login();
+        this.utilController = utilController;
+        loginView = new Login();
         unRegRenterView = new UnRegRenterView();
         loginView.Login();
         loginView.setVisible(true);
@@ -61,48 +61,84 @@ public class LoginController implements ActionListener{
         loginView.addLoginListener(this);
         loginView.addNewListener(this);
     }
-    
+
     /**
      * Action performed based on passed action event
-     * @param e event 
+     * @param e event
      */
     @Override
-    public void actionPerformed(ActionEvent e)   // calls login(...) first, then register(...)
-      login(String username, ...)
-      register(String username, ...)
+    public void actionPerformed(ActionEvent e){
+        String username = loginView.getUsername();
+        String password = loginView.getPassword();
+
         try{
             if(e.getActionCommand().equals("login")){
-                if(login(username, password)){ } 
-                else {
+                if(!login(username, password)){
                     System.err.println("Fail!");
                 }
-            }else if(e.getActionCommand().equals("register")){
+            } else if(e.getActionCommand().equals("register")){
                 unRegRenterView.setVisible(true);
                 unRegRenterView.submitListener(this);
-            }else if(e.getActionCommand().equals("submit")){
-               String firstName = unRegRenterView.getFName();
-               String lastName = unRegRenterView.getLName();
-               String email = unRegRenterView.getEmail();
-               String pass = unRegRenterView.getPassword();
-              if (!register(email, pass, accessLevel, firstName, lastName)) {
-             System.err.println("Registration Failed! User exist!");
-         }
+            } else if(e.getActionCommand().equals("submit")){
+                String firstName = unRegRenterView.getFName();
+                String lastName = unRegRenterView.getLName();
+                String email = unRegRenterView.getEmail();
+                String pass = unRegRenterView.getPassword();
+                if (!register(email, pass, accessLevel, firstName, lastName)) {
+                    System.err.println("Registration Failed! User exist!");
+                }
             }
-      } catch (Exception exception) {
-    exception.printStackTrace();
-}
-    }
-
-    public void openHomePage(String userType){
-     
-        //Open the page to view depending on renter, landlord or other stuff
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     /**
-     * Ends program
+     * logs user in
+     * @param username user username
+     * @param password user password
      */
-    public void endProgram(){
-        db.close();
+    public boolean login(String username, String password){
+
+        JSONObject person;
+        this.personController = new PersonController(db);
+        emailAddress=username;
+        int accessLevel;
+        try{
+            accessLevel = db.validateLogin(username, password);
+
+            if(accessLevel == ACCESS_LEVEL_MANAGER){
+                person = findPersonWithEmail(username);
+                personController.setManager(person);
+                propertyController = new PropertyController(db, personController, utilController);
+
+managerController = new ManagerController(db, personController, utilController, propertyController);
+            } else if(accessLevel == ACCESS_LEVEL_LANDLORD){
+                person = findPersonWithEmail(username);
+                personController.setLandlord(person);
+                propertyController = new PropertyController(db, personController, utilController);
+                landlordController = new LandlordController(db, personController, utilController, propertyController);
+            } else{
+                person = db.findRenter(findPersonWithEmail(username));
+                personController.setRenter(person);
+                propertyController = new PropertyController(db, personController, utilController);
+            }
+            this.personController.getPerson().setEmail(username);
+
+        } catch(IllegalQueryException e){
+            e.printStackTrace();
+            return false; //registration Failed
+        }
+
+        //If successfully logged in, add to model
+        return true;
+
+    }
+
+    private JSONObject findPersonWithEmail(String username) throws IllegalQueryException {
+        JSONObject person = db.findPerson(username);
+        person.put("Email", username);
+        return person;
     }
 
     /**
@@ -111,7 +147,7 @@ public class LoginController implements ActionListener{
      * @param password String for password
      * @param accessLevel int for level of access in system
      * @param lName object of name for the user's name
-     * @return boolean whether successful 
+     * @return boolean whether successful
      */
     public boolean register(String username, String password, int accessLevel, String fName, String lName){
 
@@ -123,66 +159,36 @@ public class LoginController implements ActionListener{
             return false; //registration Failed
         }
         //If successfully, Add to Model
-        this.pc = new PersonController(db);
-        
+        this.personController = new PersonController(db);
+
         if(accessLevel == ACCESS_LEVEL_MANAGER){
-            pc.setManager(fName, lName, username);
+            personController.setManager(fName, lName, username);
         } else if(accessLevel == ACCESS_LEVEL_LANDLORD){
-            pc.setLandlord(fName, lName, username);
-        } else{ 
-            pc.setRenter(fName, lName, username, false);
+            personController.setLandlord(fName, lName, username);
+        } else{
+            personController.setRenter(fName, lName, username, false);
             try{
                 db.registerRenter(username, 0, null);
             } catch(IllegalQueryException e){
                 return false;
             }
         }
-        this.pc.getPerson().setEmail(username);
+        this.personController.getPerson().setEmail(username);
         return true;
+    }
+
+    public void openHomePage(String userType){
+
+        //Open the page to view depending on renter, landlord or other stuff
     }
 
     /**
-     * logs user in
-     * @param username user username
-     * @param password user password
+     * Ends program
      */
-    public boolean login(String username, String password){
-       
-        JSONObject person;
-        this.pc = new PersonController(db);
-        emailAddress=username;
-        int accessLevel;
-        try{
-           accessLevel = db.validateLogin(username, password);
-            
-            if(accessLevel == ACCESS_LEVEL_MANAGER){
-                person = findPersonWithEmail(username);
-                personController.setManager(person);
-                propertyController = new PropertyController(db, personController, utilController);
-                managerController = new ManagerController(db, personController, utilController,propertyController);
-            } else if(accessLevel == ACCESS_LEVEL_LANDLORD){
-                person = findPersonWithEmail(username);
-                personController.setLandlord(person);
-                propc = new PropertyController(db,pc, uc);
-                landlordController = new LandlordController(db, pc, uc, propc);
-           } else{
-               person = db.findRenter(findPersonWithEmail(username));
-              
-            }
-            this.pc.getPerson().setEmail(username);
-
-        } catch(IllegalQueryException e){
-            e.printStackTrace();
-            return false; //registration Failed
-        }
-
-        //If successfully logged in, add to model
-        return true;
-
+    public void endProgram(){
+        db.close();
     }
-private JSONObject findPersonWithEmail(String username) throws IllegalQueryException {
-    JSONObject person = db.findPerson(username);
-    person.put("Email", username);
-    return person;
 }
-}
+
+             
+   
