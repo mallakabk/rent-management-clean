@@ -80,6 +80,14 @@ public class Property {
     }
 
     /**
+     * getter for the city quadrant of the property (Law of Demeter, rule 6.2)
+     * @return returns CityQuadrant object of the property's address
+     */
+    public CityQuadrant getCityQuadrant() {
+        return address.getCityQuadrant();
+    }
+
+    /**
      * getter for Property status
      * @return returns PropertyStatus object
      */
@@ -117,6 +125,14 @@ public class Property {
      */
     public boolean isFurnished() {
         return isFurnished;
+    }
+
+    /**
+     * getter for the furnished status as text (behavior with the data, rule 6.3)
+     * @return returns "Yes" if the property is furnished, "No" otherwise
+     */
+    public String getFurnishedLabel() {
+        return isFurnished ? "Yes" : "No";
     }
 
     /**
@@ -208,3 +224,6 @@ public class Property {
 }
 
 
+
+
+  
