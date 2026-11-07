@@ -1,4 +1,5 @@
-package com.rent.management.app.Controller;
+
+              package com.rent.management.app.Controller;
 
 import java.util.ArrayList;
 
@@ -239,7 +240,7 @@ public class PropertyController implements ActionListener {
                 result[j][0] = properties.get(i).getPropertyType().toString();
                 result[j][1] = Integer.toString(properties.get(i).getNumOfBed());
                 result[j][2] = Integer.toString(properties.get(i).getNumOfBath());
-               result[j][3] = properties.get(i).getFurnishedLabel();
+                result[j][3] = properties.get(i).getFurnishedLabel();
                 result[j][4] = properties.get(i).getPropertyStatus().toString();
                 result[j][5] = properties.get(i).getAddress().getFormattedAddress();
                 result[j][6] = properties.get(i).getCityQuadrant().toString();
