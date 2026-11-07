@@ -111,14 +111,10 @@ public class LandlordController implements ActionListener{
             data[i][0] = property.getPropertyType().toString();
             data[i][1] = Integer.toString(property.getNumOfBed());
             data[i][2] = Integer.toString(property.getNumOfBath());
-            if (property.isFurnished()) {
-                data[i][3] = "Yes";
-            } else {
-                data[i][3] = "No";
-            }
+           data[i][3] = property.getFurnishedLabel();
             data[i][4] = property.getAddress().getFormattedAddress();
             data[i][5] = property.getPropertyStatus().toString();
-            data[i][6] = properties.get(i).getCityQuadrant().toString();
+            data[i][6] = properties.getCityQuadrant().toString();
            
                 
 		}
