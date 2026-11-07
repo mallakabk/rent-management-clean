@@ -2,47 +2,48 @@ package com.rent.management.app.Model.Util;
 
 
 public class Name {
-  private String firstName;
-private String lastName;
-/**
- * @param firstName String argument for first name
- * @param lastName String argument for last name
- */
-public Name(String firstName, String lastName) {
-    this.setFirstName(firstName);
-    this.setLastName(lastName);
-}
+    private String firstName;
+    private String lastName;
+
+    /**
+     * @param firstName String argument for first name
+     * @param lastName String argument for last name
+     */
+    public Name(String firstName, String lastName) {
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+    }
 
     /**
      * getter for last name
      * @return returns string of last name
      */
-    public String getlName() {
-        return lName;
+    public String getLastName() {
+        return lastName;
     }
 
     /**
      * setter for last name
-     * @param lName String argument to be stored
+     * @param lastName String argument to be stored
      */
-    public void setlName(String lName) {
-        this.lName = lName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     /**
      * getter for first name
      * @return returns string of first name
      */
-    public String getfName() {
-        return fName;
+    public String getFirstName() {
+        return firstName;
     }
 
-     /**
+    /**
      * setter for first name
-     * @param fName String argument to be stored
+     * @param firstName String argument to be stored
      */
-    public void setfName(String fName) {
-        this.fName = fName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     /**
@@ -50,7 +51,8 @@ public Name(String firstName, String lastName) {
      * @return returns a String with the name properly formatted to read
      */
     public String getFormattedName(){
-        return fName  + " " + lName;
+        return firstName + " " + lastName;
     }
 }
 
+  
