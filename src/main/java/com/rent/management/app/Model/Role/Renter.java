@@ -3,10 +3,10 @@ package com.rent.management.app.Model.Role;
 import com.rent.management.app.Model.Util.*;
 
 public class Renter implements Person{
-      private Date loginDate;
-private boolean notificationsOn;
-private Name name;
-private String email;
+    private Date loginDate;
+    private boolean notificationsOn;
+    private Name name;
+    private String email;
     private SearchCriteria searchCriteria;
 
     
@@ -15,13 +15,13 @@ private String email;
      */
     public Renter(){}
 
-/**
- * Constructor for Renter
- * @param name Name object to be stored
- * @param email String for email to be stored
- * @param notificationsOn whether the renter wants notifications
- * @param searchCriteria search criteria saved by the renter
- */
+    /**
+     * Constructor for Renter
+     * @param name Name object to be stored
+     * @param email String for email to be stored
+     * @param notificationsOn whether the renter wants notifications
+     * @param searchCriteria search criteria saved by the renter
+     */
     public Renter(Name name, String email, boolean notificationsOn, SearchCriteria searchCriteria){
         setName(name);
         setEmail(email);
