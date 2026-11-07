@@ -119,18 +119,21 @@ public class Date {
      * @return returns boolean as to whether day is valid
      */
     private boolean validateDay(int day) throws IllegalDateException {
-    if (day < 1 || day > lastDayOfMonth()) {
-        throw new IllegalDateException();
+        if (day < 1 || day > lastDayOfMonth()) {
+            throw new IllegalDateException();
+        }
+        return true;
     }
-    return true;
-}
-private int lastDayOfMonth() {
-    if (month == 2) {
-        return 28;
+
+    private int lastDayOfMonth() {
+        if (month == 2) {
+            return 28;
+        }
+        if (month == 4 || month == 6 || month == 9 || month == 11) {
+            return 30;
+        }
+        return 31;
     }
-    if (month == 4 || month == 6 || month == 9 || month == 11) {
-        return 30;
-    }
-    return 31;
 }
-}
+
+    
