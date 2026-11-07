@@ -167,11 +167,7 @@ public class LoginController implements ActionListener{
                 landlordController = new LandlordController(db, pc, uc, propc);
            } else{
                person = db.findRenter(findPersonWithEmail(username));
-               private JSONObject findPersonWithEmail(String username) throws IllegalQueryException {
-               JSONObject person = db.findPerson(username);
-               person.put("Email", username);
-               return person;
-            }
+              
             }
             this.pc.getPerson().setEmail(username);
 
@@ -184,4 +180,9 @@ public class LoginController implements ActionListener{
         return true;
 
     }
+private JSONObject findPersonWithEmail(String username) throws IllegalQueryException {
+    JSONObject person = db.findPerson(username);
+    person.put("Email", username);
+    return person;
+}
 }
