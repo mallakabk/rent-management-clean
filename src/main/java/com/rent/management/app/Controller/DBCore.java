@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 
 import com.rent.management.app.Exceptions.IllegalQueryException;
 import com.rent.management.app.Model.Role.Person;
+import com.rent.management.app.Model.Property.Property;
+import com.rent.management.app.Model.Util.Payment;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,6 +28,7 @@ public class DBCore {
     private final String DB_URL;
 
     private Connection dbConnect;
+    private static final int FEE_PAID = 1;
     private ResultSet result;
 
     /**
@@ -265,40 +268,31 @@ public class DBCore {
     }
 
     /**
-    * Updates property based on PID with the new inputs
-    * @param pid property identification
-    * @param lEmail landlord email associated with property
-    * @param type property type
-    * @param numBed number of bedrooms in the property
-    * @param numBath number of bathrooms in the property
-    * @param furnished whether or not the property is furnished
-    * @param quadrant city quadrant in which the property is located
-    * @param address streed address of property
-    * @param isPaid fee paid status
-    * @param status property status
-    * @param start active date start (for property posting)
-    * @param end end active date based on fees
-    */
-  private static final int FEE_PAID = 1;
-public boolean updateProperty(Property property){
-    Payment payment = property.getPayment();
-    String start = payment.getPeriod().getStartDate().getFormattedDate();
-    String end = payment.getPeriod().getEndDate().getFormattedDate();
-    try{
-        String query = "UPDATE Property SET Type = ?, ... WHERE PID = '"
-                + property.getPropertyId() + "'";
-        PreparedStatement stmt = dbConnect.prepareStatement(query);
-        stmt.setString(1, property.getPropertyType().toString());
-        stmt.setInt(2, property.getNumOfBed());
-        stmt.setInt(3, property.getNumOfBath());
-        stmt.setString(4, property.getFurnishedLabel());   // added in Rule 6.3
-            stmt.setString(5, quadrant);
-            stmt.setString(6, address);
-          stmt.setInt(7, FEE_PAID);
-        stmt.setString(9, start);
-        stmt.setString(10, end);
-    } catch (SQLException ex){ ... }
-    return true;
+     * Updates property based on PID with the new inputs
+     * @param property property containing the new values (its PID selects the row to update)
+     */
+    public boolean updateProperty(Property property){
+        Payment payment = property.getPayment();
+        String start = payment.getPeriod().getStartDate().getFormattedDate();
+        String end = payment.getPeriod().getEndDate().getFormattedDate();
+        try{
+            String query = "UPDATE Property SET Type = ?,  Num_Bed = ?, Num_Bath = ?, Furnished = ?, Quadrant = ?, Address = ?, Fee_Paid = ?, Status = ?, Active_Date = ?, End_Date = ? WHERE PID = '" + property.getPropertyId() + "'";
+            PreparedStatement stmt = dbConnect.prepareStatement(query);
+            stmt.setString(1, property.getPropertyType().toString());
+            stmt.setInt(2, property.getNumOfBed());
+            stmt.setInt(3, property.getNumOfBath());
+            stmt.setString(4, property.getFurnishedLabel());
+            stmt.setString(5, property.getCityQuadrant().toString());
+            stmt.setString(6, property.getAddress().getFormattedAddress());
+            stmt.setInt(7, FEE_PAID);
+            stmt.setString(8, property.getPropertyStatus().toString());
+            stmt.setString(9, start);
+            stmt.setString(10, end);
+        } catch (SQLException ex){
+            System.err.println("Error in 'update property' sql");
+            throw new IllegalQueryException();
+        }
+        return true;
     }
 
     /**
@@ -306,15 +300,15 @@ public boolean updateProperty(Property property){
      * @return JSONArray containing all properties with each object being an individual property
      */
     public JSONArray getAllProperties() {
-        JSONArray arr = new JSONArray(); // array of properties to be returned
+        JSONArray arr = new JSONArray();
         try {
-            String query = "SELECT * FROM Property"; // select all properties query
+            String query = "SELECT * FROM Property";
 
             Statement stmt =  dbConnect.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
             while(rs.next()){
-                JSONObject obj = new JSONObject(); // json object to be returned with all properties
+                JSONObject obj = new JSONObject();
                 obj.put("pid", rs.getString("pid"));
                 obj.put("l_email", rs.getString("l_email"));
                 obj.put("type", rs.getString("type"));
@@ -327,7 +321,7 @@ public boolean updateProperty(Property property){
                 obj.put("status", rs.getString("status"));
                 obj.put("active_date", rs.getString("active_date"));
                 obj.put("end_date", rs.getString("end_date"));
-                arr.add(obj); // adding the object to the json array
+                arr.add(obj);
             }
 
             stmt.close();
@@ -463,19 +457,24 @@ public boolean updateProperty(Property property){
 
             String query = "UPDATE Property SET Fee_Paid = 1, Active_Date = ?, End_Date = ? WHERE PID = " + property_id + " ";
 
-           PreparedStatement stmt = dbConnect.prepareStatement(query);
-LocalDateTime date = LocalDateTime.now(); // retrieve current date
-DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-String formattedDate = date.format(formatter);
-stmt.setString(1, formattedDate);
-// increment date by period
-date.plusDays(period);
-formattedDate = date.format(formatter);
-stmt.setString(2, formattedDate);
-// submit query
-stmt.executeUpdate();
-stmt.close();
-} catch (SQLException ex) {
+            PreparedStatement stmt = dbConnect.prepareStatement(query);
+
+            LocalDateTime date = LocalDateTime.now(); // retrieve current date
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+            String formattedDate = date.format(formatter);
+
+            stmt.setString(1, formattedDate);
+
+            // increment date by period
+            date.plusDays(period);
+            formattedDate = date.format(formatter);
+            stmt.setString(2, formattedDate);
+
+            // submit query
+            stmt.executeUpdate();
+            stmt.close();
+
+        } catch (SQLException ex) {
             System.err.println("Error in paying fees");
             ex.printStackTrace();
         }
@@ -871,19 +870,18 @@ stmt.close();
      * @return JSONArray of all people
      */
     public JSONArray getAllPeople(){
-       JSONArray people = new JSONArray();
-try {
-    String query = "SELECT * FROM Person";
+        JSONArray people = new JSONArray();
+        try {
+            String query = "SELECT * FROM Person";
 
             Statement stmt =  dbConnect.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
-
             while(rs.next()){
-               JSONObject person = new JSONObject();
-               person.put("email", rs.getString("email"));
-                obj.put("name", rs.getString("name"));
-                obj.put("access_level", rs.getString("accessLevel"));
+                JSONObject person = new JSONObject();
+                person.put("email", rs.getString("email"));
+                person.put("name", rs.getString("name"));
+                person.put("access_level", rs.getString("accessLevel"));
                 people.add(person);
             }
 
@@ -893,8 +891,8 @@ try {
             System.err.println("Error in getting all persons sql");
             ex.printStackTrace();
         }
-       
-       return people;
+
+        return people;
     }
 
     /**
