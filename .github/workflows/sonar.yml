@@ -1,0 +1,35 @@
+name: Maven Build and SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Build and Analyze with Maven
+        run: >
+          mvn -B clean verify
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          -Dsonar.organization=mallakabk-1
+          -Dsonar.projectKey=mallakabk_rent-management-clean
+          -Dsonar.host.url=https://sonarcloud.io
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
